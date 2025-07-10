@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
@@ -6,9 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const CLIENT_ID = "4408114506102237";
-const CLIENT_SECRET = "mVNOdqqQan8aaMpJF4yhlkh1J562VcHh";
-const REDIRECT_URI = "https://tu-backend.onrender.com/auth/callback"; // Asegurate de que coincida con el de la app en MP
+const CLIENT_ID = process.env.MP_CLIENT_ID;
+const CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
