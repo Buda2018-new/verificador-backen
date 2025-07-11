@@ -13,7 +13,8 @@ const CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
 const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccountKey.json");
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
