@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
@@ -8,13 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const CLIENT_ID = process.env.MP_CLIENT_ID;
-const CLIENT_SECRET = process.env.MP_CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI;
+
+const REDIRECT_URI = "https://verificador-backend.onrender.com/auth/callback"; // Asegurate de que coincida con el de la app en MP
 
 const admin = require("firebase-admin");
-
-const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -33,17 +29,17 @@ app.get("/auth/callback", async (req, res) => {
 
   try {
     // Paso 1: Intercambiar el code por el access_token
-    const response = await axios.post("https://api.mercadopago.com/oauth/token", {
-      grant_type: "authorization_code",
-      client_id: process.env.MP_CLIENT_ID,
-      client_secret: process.env.MP_CLIENT_SECRET,
-      code: code,
-      redirect_uri: "https://tu-backend.onrender.com/auth/callback" // ⚠️ reemplazalo si cambió
-    }, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+const response = await axios.post("https://api.mercadopago.com/oauth/token", {
+  grant_type: "authorization_code",
+  client_id: "4408114506102237", // tu client ID real
+  client_secret: "mVNOdqqQan8aaMpJF4yhlkh1J562VcHh", // tu client secret real
+  code: code,
+  redirect_uri: "https://verificador-backend.onrender.com/auth/callback"
+}, {
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
 
     const { access_token, refresh_token, public_key, user_id } = response.data;
 
@@ -61,4 +57,8 @@ app.get("/auth/callback", async (req, res) => {
   }
 });
 
+const PORT = process.env.PORT || 10000;
 
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+});
